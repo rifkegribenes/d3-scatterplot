@@ -21,6 +21,10 @@ body {
 	text-align: center;
 }
 
+.middle {
+  text-align: center;
+}
+
 .d3-tip {
   line-height: 1;
   color: #fff;
