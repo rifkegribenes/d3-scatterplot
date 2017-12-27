@@ -324,6 +324,7 @@ const legend = svg.selectAll('.legend')
                   .on('click', (d) => {
                     const allCircles = Array.from(document.getElementsByClassName('circle'));
                     const otherContinents = allCircles.filter(el => !el.classList.contains(d));
+                    const continentMatches = Array.from(document.getElementsByClassName(d));
                     otherContinents.forEach((el) => {
                       el.classList.remove('visible');
                       el.classList.add('hidden');
@@ -332,6 +333,8 @@ const legend = svg.selectAll('.legend')
                       el.classList.remove('hidden');
                       el.classList.add('visible');
                     });
+                    document.getElementById('btn').classList.add('btn-show');
+                    document.getElementById('btn').classList.remove('btn-hide');
                   });
 
 legend.append('circle')
@@ -343,3 +346,15 @@ legend.append('text')
   .attr('x', legendRectSize )
   .attr('y', legendRectSize - (legendSpacing * 1.5))
   .text(function(d) { return d; });
+
+const showAll = () => {
+  const allCircles = Array.from(document.getElementsByClassName('circle'));
+  allCircles.forEach((el) => {
+    el.classList.remove('hidden');
+    el.classList.add('visible');
+  });
+  document.getElementById('btn').classList.add('btn-hide');
+  document.getElementById('btn').classList.remove('btn-show');
+}
+
+document.getElementById('btn').addEventListener("click", showAll);
