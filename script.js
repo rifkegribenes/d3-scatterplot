@@ -226,9 +226,12 @@ const dataset = [
   ["Zimbabwe",60.4,2000,50.1,"Sub-Saharan Africa"  ]
 ];
 
-let w = 1000;
-const h = 600;
+const w = 1000;
+const h = 800;
 const padding = 60;
+const marginTop = 200;
+const legendRectSize = 18;
+const legendSpacing = 4;
 
 const formatCurrency = d3.format("$,");
 
@@ -236,7 +239,7 @@ const maxLE = d3.max(dataset, (d) => d[1]);
 const minLE = d3.min(dataset, (d) => d[1]);
 const yScale = d3.scaleLinear()
                  .domain([minLE, maxLE])
-                 .range([h - padding, padding]);
+                 .range([h - padding, marginTop]);
 const maxGini = d3.max(dataset, (d) => d[3]);
 const minGini = d3.min(dataset, (d) => d[3]);
 const xScale = d3.scaleLinear()
@@ -272,6 +275,7 @@ const getColor = (continent) => {
   const index = continents.indexOf(continent);
   return colors[index];
 }
+const color = d3.scaleOrdinal(d3.schemeCategory20c);
 
 svg.selectAll("circle")
   .data(dataset)
@@ -281,7 +285,8 @@ svg.selectAll("circle")
   .attr("cy", (d) => yScale(d[1]))
   .attr("r", (d) => rScale(d[2]))
   .attr("width", 9)
-  .attr("fill", (d) => `hsl(${getColor(d[4]) - (2 * rScale(d[2]))}, 100%, ${50 + (2 * rScale(d[2]))}%)` )
+  // .attr("fill", (d) => `hsl(${getColor(d[4]) - (2 * rScale(d[2]))}, 100%, ${50 + (2 * rScale(d[2]))}%)` )
+  .attr("fill", (d) => color(d[4]))
   .attr("class", "circle")
   .on('mouseover', tip.show)
   .on('mouseout', tip.hide);
@@ -294,13 +299,38 @@ svg.append("g")
 svg.append("text")
     .attr("text-anchor", "middle")
     .attr("transform", "translate("+ (padding/2) +","+(h/2)+")rotate(-90)")
-    .text("Life Expectancy at Birth");
+    .text("Life Expectancy at Birth (in years)");
 
 svg.append("text")
     .attr("text-anchor", "middle")
     .attr("transform", "translate("+ (w/2) +","+(h-(padding/3))+")")
-    .text("Gini Index (Relative inequality of income distribution)");
+    .text("Gini Index (Measure of income inequality)");
 
 svg.append("g")
    .attr("transform", `translate(${padding}, 0)`)
    .call(yAxis);
+
+const legend = svg.selectAll('.legend')
+                  .data(color.domain())
+                  .enter()
+                  .append('g')
+                  .attr('class', 'legend')
+                  .attr('transform', function(d, i) {
+                    var height = legendRectSize + legendSpacing;
+                    var offset =  height * color.domain().length / 2;
+                    // var horz = -2 * legendRectSize;
+                    const horz = 10;
+                    var vert = i * height;
+                    return 'translate(' + horz + ',' + vert + ')';
+                  });
+
+legend.append('rect')
+  .attr('width', legendRectSize)
+  .attr('height', legendRectSize)
+  .style('fill', color)
+  .style('stroke', color);
+
+legend.append('text')
+  .attr('x', legendRectSize + legendSpacing)
+  .attr('y', legendRectSize - legendSpacing)
+  .text(function(d) { return d; });
