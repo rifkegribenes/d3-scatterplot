@@ -229,9 +229,9 @@ const dataset = [
 const w = 1000;
 const h = 800;
 const padding = 60;
-const marginTop = 200;
+const marginTop = 120;
 const legendRectSize = 18;
-const legendSpacing = 4;
+const legendSpacing = 6;
 
 const formatCurrency = d3.format("$,");
 
@@ -319,8 +319,11 @@ const legend = svg.selectAll('.legend')
                     var height = legendRectSize + legendSpacing;
                     var offset =  height * color.domain().length / 2;
                     // var horz = -2 * legendRectSize;
-                    const horz = 10;
-                    var vert = i * height;
+                    let row = i <= 5 ? 1 : 2;
+                    let horz = i <= 5 ?
+                      20 + (i * w / 6) :
+                      20 + ((i - 6) * w / 6);
+                    const vert = height * row;
                     return 'translate(' + horz + ',' + vert + ')';
                   });
 
