@@ -70,6 +70,23 @@ body {
 .legend {
   font-size: 12px;
 }
-rect {
-  stroke-width: 2;
+
+.legend:hover circle {
+  cursor: pointer;
+  opacity: .5;
+  -webkit-box-shadow: 0px 0px 10px 2px lime;
+  -moz-box-shadow: 0px 0px 10px 2px lime;
+  box-shadow: 0px 0px 10px 2px lime;
+}
+
+circle {
+  opacity: .8;
+}
+
+.hidden {
+  opacity: 0 !important;
+}
+
+.visible {
+  opacity: .8 !important;
 }

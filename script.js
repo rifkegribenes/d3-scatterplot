@@ -231,7 +231,7 @@ const h = 800;
 const padding = 60;
 const marginTop = 120;
 const legendRectSize = 18;
-const legendSpacing = 6;
+const legendSpacing = 8;
 
 const formatCurrency = d3.format("$,");
 
@@ -269,13 +269,7 @@ const svg = d3.select("body")
 
 svg.call(tip);
 
-const colors = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
-const continents = ["North Asia", "East Asia", "South & South East Asia", "West & Central Asia", "Europe", "North Africa", "Sub-Saharan Africa", "Oceania", "Mesoamerica", "Caribbean Islands", "North America", "South America" ];
-const getColor = (continent) => {
-  const index = continents.indexOf(continent);
-  return colors[index];
-}
-const color = d3.scaleOrdinal(d3.schemeCategory20c);
+const color = d3.scaleOrdinal(d3.schemeCategory20);
 
 svg.selectAll("circle")
   .data(dataset)
@@ -287,7 +281,7 @@ svg.selectAll("circle")
   .attr("width", 9)
   // .attr("fill", (d) => `hsl(${getColor(d[4]) - (2 * rScale(d[2]))}, 100%, ${50 + (2 * rScale(d[2]))}%)` )
   .attr("fill", (d) => color(d[4]))
-  .attr("class", "circle")
+  .attr("class", (d) => `circle ${d[4]}`)
   .on('mouseover', tip.show)
   .on('mouseout', tip.hide);
 
@@ -315,25 +309,37 @@ const legend = svg.selectAll('.legend')
                   .enter()
                   .append('g')
                   .attr('class', 'legend')
+                  .attr('id', (d) => d)
                   .attr('transform', function(d, i) {
                     var height = legendRectSize + legendSpacing;
                     var offset =  height * color.domain().length / 2;
                     // var horz = -2 * legendRectSize;
                     let row = i <= 5 ? 1 : 2;
                     let horz = i <= 5 ?
-                      20 + (i * w / 6) :
-                      20 + ((i - 6) * w / 6);
+                      30 + (i * w / 6) :
+                      30 + ((i - 6) * w / 6);
                     const vert = height * row;
                     return 'translate(' + horz + ',' + vert + ')';
+                  })
+                  .on('click', (d) => {
+                    const allCircles = Array.from(document.getElementsByClassName('circle'));
+                    const otherContinents = allCircles.filter(el => !el.classList.contains(d));
+                    otherContinents.forEach((el) => {
+                      el.classList.remove('visible');
+                      el.classList.add('hidden');
+                    });
+                    continentMatches.forEach((el) => {
+                      el.classList.remove('hidden');
+                      el.classList.add('visible');
+                    });
                   });
 
-legend.append('rect')
-  .attr('width', legendRectSize)
-  .attr('height', legendRectSize)
+legend.append('circle')
+  .attr('r', legendRectSize / 2)
   .style('fill', color)
   .style('stroke', color);
 
 legend.append('text')
-  .attr('x', legendRectSize + legendSpacing)
-  .attr('y', legendRectSize - legendSpacing)
+  .attr('x', legendRectSize )
+  .attr('y', legendRectSize - (legendSpacing * 1.5))
   .text(function(d) { return d; });
