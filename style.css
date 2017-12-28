@@ -84,11 +84,11 @@ circle {
 }
 
 .hidden {
-  opacity: 0 !important;
+  display: none !important;
 }
 
 .visible {
-  opacity: .8 !important;
+  display: block !important;
 }
 
 .button-wrap {

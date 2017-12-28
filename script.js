@@ -278,11 +278,15 @@ svg.selectAll("circle")
   .attr("cx", (d) => xScale(d[3]))
   .attr("cy", (d) => yScale(d[1]))
   .attr("r", (d) => rScale(d[2]))
-  .attr("width", 9)
-  // .attr("fill", (d) => `hsl(${getColor(d[4]) - (2 * rScale(d[2]))}, 100%, ${50 + (2 * rScale(d[2]))}%)` )
   .attr("fill", (d) => color(d[4]))
+  .attr("id", (d) => d[0])
   .attr("class", (d) => `circle ${d[4]}`)
-  .on('mouseover', tip.show)
+  .on('mouseover', (d) => {
+    // only show tooltips for visible plots
+    if (!document.getElementById(d[0]).classList.contains('hidden')) {
+       tip.show(d);
+      }
+  })
   .on('mouseout', tip.hide);
 
 svg.append("g")
